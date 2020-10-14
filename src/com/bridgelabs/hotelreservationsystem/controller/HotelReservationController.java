@@ -14,13 +14,16 @@ public class HotelReservationController {
 	public void addHotel(HotelReservation hotelReservation) {
 		HotelReservationMain.LOG.info("Enter Hotel Name: ");
 		String name = HotelReservationMain.sc.nextLine();
+		HotelReservationMain.LOG.info("Enter Rating (out of 5): ");
+		int rating = HotelReservationMain.sc.nextInt();
+		HotelReservationMain.sc.nextLine();
 		HotelReservationMain.LOG.info("Enter regularWeekdayPrice: ");
 		int regularWeekdayPrice = HotelReservationMain.sc.nextInt();
 		HotelReservationMain.LOG.info("Enter regularWeekendPrice: ");
 		int regularWeekendPrice = HotelReservationMain.sc.nextInt();
 		HotelReservationMain.sc.nextLine();
 
-		Hotel hotel = new Hotel(name, regularWeekdayPrice, regularWeekendPrice);
+		Hotel hotel = new Hotel(name, rating, regularWeekdayPrice, regularWeekendPrice);
 		hotelReservation.addHotel(hotel);
 	}
 
@@ -67,8 +70,8 @@ public class HotelReservationController {
 					cheapestHotel.setTotalPrice(price);
 				}
 			}
-			HotelReservationMain.LOG.info(
-					"Cheapest Hotel for date range " + startDate.getDate() + " to " + endDate.getDate() + " :\n");
+			HotelReservationMain.LOG
+					.info("Cheapest Hotel for date range " + startDate.getDate() + " to " + endDate.getDate() + " :\n");
 			for (Hotel hotel : hotelList) {
 				if (cheapestHotel.getTotalPrice() == hotel.getTotalPrice())
 					HotelReservationMain.LOG.info("Hotel Name: " + hotel.getHotelName()

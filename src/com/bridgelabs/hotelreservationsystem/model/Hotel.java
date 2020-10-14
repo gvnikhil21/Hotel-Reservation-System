@@ -4,14 +4,16 @@ public class Hotel {
 	private String hotelName;
 	private int regularWeekdayPrice;
 	private int regularWeekendPrice;
+	private int rating;
 	private int totalPrice;
 
 	// constructor
 	public Hotel() {
 	}
 
-	public Hotel(String hotelName, int regularWeekdayPrice, int regularWeekendPrice) {
+	public Hotel(String hotelName, int rating, int regularWeekdayPrice, int regularWeekendPrice) {
 		this.hotelName = hotelName;
+		this.rating = rating;
 		this.regularWeekdayPrice = regularWeekdayPrice;
 		this.regularWeekendPrice = regularWeekendPrice;
 	}
@@ -41,6 +43,14 @@ public class Hotel {
 		this.regularWeekendPrice = regularWeekendPrice;
 	}
 
+	public int getRating() {
+		return rating;
+	}
+
+	public void setRating(int rating) {
+		this.rating = rating;
+	}
+
 	public int getTotalPrice() {
 		return totalPrice;
 	}
@@ -51,8 +61,8 @@ public class Hotel {
 
 	@Override
 	public String toString() {
-		return "Hotel Name: " + hotelName + "\nPrice for regular customer week-day: " + regularWeekdayPrice
-				+ "\nPrice for regular customer week-end: " + regularWeekendPrice + "\n";
+		return "Hotel Name: " + hotelName + "\nRating: " + rating + "\nPrice for regular customer week-day: $"
+				+ regularWeekdayPrice + "\nPrice for regular customer week-end: $" + regularWeekendPrice + "\n";
 	}
 
 }
