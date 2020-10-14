@@ -4,6 +4,7 @@ public class Hotel {
 	private String hotelName;
 	private int regularWeekdayPrice;
 	private int regularWeekendPrice;
+	private int totalPrice;
 
 	// constructor
 	public Hotel(String hotelName, int regularWeekdayPrice, int regularWeekendPrice) {
@@ -35,6 +36,14 @@ public class Hotel {
 
 	public void setRegularWeekendPrice(int regularWeekendPrice) {
 		this.regularWeekendPrice = regularWeekendPrice;
+	}
+
+	public int getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(int totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 	@Override

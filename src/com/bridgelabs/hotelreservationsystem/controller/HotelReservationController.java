@@ -1,5 +1,8 @@
 package com.bridgelabs.hotelreservationsystem.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import com.bridgelabs.hotelreservationsystem.model.Hotel;
@@ -30,5 +33,46 @@ public class HotelReservationController {
 			for (Hotel hotel : hotelList) {
 				HotelReservationMain.LOG.info(hotel.toString());
 			}
+	}
+
+	@SuppressWarnings("deprecation")
+	public void findCheapestHotel(HotelReservation hotelReservation) {
+		SimpleDateFormat format = new SimpleDateFormat("ddMMMyyyy");
+		HotelReservationMain.LOG.info("Enter start date (format: ddMMMyyyy): ");
+		String dateStart = HotelReservationMain.sc.nextLine();
+		HotelReservationMain.LOG.info("Enter end date (format: ddMMMyyyy): ");
+		String dateEnd = HotelReservationMain.sc.nextLine();
+		Date startDate = null;
+		Date endDate = null;
+		int weekDays = 0;
+		int weekEnds = 0;
+		try {
+			startDate = format.parse(dateStart);
+			endDate = format.parse(dateEnd);
+			Date date = startDate;
+			while (!date.after(endDate)) {
+				if (date.getDay() == 0 || date.getDay() == 6)
+					weekEnds++;
+				else
+					weekDays++;
+				date.setTime(date.getTime() + (1000 * 60 * 60 * 24));
+			}
+			int totalPrice = Integer.MAX_VALUE;
+			Hotel cheapestHotel = null;
+			List<Hotel> hotelList = hotelReservation.getHotelList();
+			for (Hotel hotel : hotelList) {
+				int price = hotel.getRegularWeekdayPrice() * weekDays + hotel.getRegularWeekendPrice() * weekEnds;
+				if (price < totalPrice) {
+					totalPrice = price;
+					cheapestHotel = hotel;
+					cheapestHotel.setTotalPrice(totalPrice);
+				}
+			}
+			HotelReservationMain.LOG.info("Cheapest Hotel for date range " + startDate.getDate() + " to "
+					+ endDate.getDate() + " is: \nHotel Name: " + cheapestHotel.getHotelName()
+					+ "\nTotal Price for given duration: $" + cheapestHotel.getTotalPrice() + "\n");
+		} catch (ParseException | NullPointerException e) {
+			e.printStackTrace();
+		}
 	}
 }
