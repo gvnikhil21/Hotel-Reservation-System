@@ -21,12 +21,17 @@ public class HotelReservationController {
 		int rating = HotelReservationMain.sc.nextInt();
 		HotelReservationMain.sc.nextLine();
 		HotelReservationMain.LOG.info("Enter regularWeekdayPrice: ");
-		int regularWeekdayPrice = HotelReservationMain.sc.nextInt();
+		int regularWeekDayPrice = HotelReservationMain.sc.nextInt();
 		HotelReservationMain.LOG.info("Enter regularWeekendPrice: ");
-		int regularWeekendPrice = HotelReservationMain.sc.nextInt();
+		int regularWeekEndPrice = HotelReservationMain.sc.nextInt();
+		HotelReservationMain.LOG.info("Enter rewardsWeekdayPrice: ");
+		int rewardsWeekDayPrice = HotelReservationMain.sc.nextInt();
+		HotelReservationMain.LOG.info("Enter rewardsWeekendPrice: ");
+		int rewardsWeekEndPrice = HotelReservationMain.sc.nextInt();
 		HotelReservationMain.sc.nextLine();
 
-		Hotel hotel = new Hotel(name, rating, regularWeekdayPrice, regularWeekendPrice);
+		Hotel hotel = new Hotel(name, rating, regularWeekDayPrice, regularWeekEndPrice, rewardsWeekDayPrice,
+				rewardsWeekEndPrice);
 		hotelReservation.addHotel(hotel);
 	}
 
@@ -53,14 +58,14 @@ public class HotelReservationController {
 	}
 
 	// returns the list of cheapest hotels for a given date range
-	public List<Hotel> getCheapestHotelList(HotelReservation hotelReservation) {
+	private List<Hotel> getCheapestHotelList(HotelReservation hotelReservation) {
 		List<Hotel> cheapestHotelList = new ArrayList<Hotel>();
 		Hotel cheapestHotel = new Hotel();
 		cheapestHotel.setTotalPrice(Integer.MAX_VALUE);
 		cheapestHotel.setRating(Integer.MIN_VALUE);
 		List<Hotel> hotelList = hotelReservation.getHotelList();
 		for (Hotel hotel : hotelList) {
-			int price = hotel.getRegularWeekdayPrice() * weekDays + hotel.getRegularWeekendPrice() * weekEnds;
+			int price = hotel.getRegularWeekDayPrice() * weekDays + hotel.getRegularWeekEndPrice() * weekEnds;
 			hotel.setTotalPrice(price);
 			if ((hotel.getTotalPrice() <= cheapestHotel.getTotalPrice())
 					&& (hotel.getRating() > cheapestHotel.getRating())) {
@@ -78,7 +83,7 @@ public class HotelReservationController {
 
 	// determines no. of weekEnds and weekDays
 	@SuppressWarnings("deprecation")
-	public void determineWeekDaysWeekEnds(String dateStart, String dateEnd) {
+	private void determineWeekDaysWeekEnds(String dateStart, String dateEnd) {
 		SimpleDateFormat format = new SimpleDateFormat("ddMMMyyyy");
 		weekDays = 0;
 		weekEnds = 0;
@@ -109,7 +114,7 @@ public class HotelReservationController {
 		List<Hotel> bestRatedHotelList = new ArrayList<Hotel>();
 		int rating = Integer.MIN_VALUE;
 		for (Hotel hotel : hotelList) {
-			int price = hotel.getRegularWeekdayPrice() * weekDays + hotel.getRegularWeekendPrice() * weekEnds;
+			int price = hotel.getRegularWeekDayPrice() * weekDays + hotel.getRegularWeekEndPrice() * weekEnds;
 			hotel.setTotalPrice(price);
 			if (hotel.getRating() > rating)
 				rating = hotel.getRating();
@@ -125,7 +130,7 @@ public class HotelReservationController {
 	}
 
 	// prints cheapest hotel details
-	public void printCheapestHotel(List<Hotel> cheapestHotelList) {
+	private void printCheapestHotel(List<Hotel> cheapestHotelList) {
 		for (Hotel hotel : cheapestHotelList)
 			HotelReservationMain.LOG
 					.info("Cheapest Hotel for given date range:\nHotel Name: " + hotel.getHotelName() + "\nRating: "

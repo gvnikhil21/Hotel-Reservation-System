@@ -2,8 +2,10 @@ package com.bridgelabs.hotelreservationsystem.model;
 
 public class Hotel {
 	private String hotelName;
-	private int regularWeekdayPrice;
-	private int regularWeekendPrice;
+	private int regularWeekDayPrice;
+	private int regularWeekEndPrice;
+	private int rewardsWeekDayPrice;
+	private int rewardsWeekEndPrice;
 	private int rating;
 	private int totalPrice;
 
@@ -11,11 +13,14 @@ public class Hotel {
 	public Hotel() {
 	}
 
-	public Hotel(String hotelName, int rating, int regularWeekdayPrice, int regularWeekendPrice) {
+	public Hotel(String hotelName, int rating, int regularWeekDayPrice, int regularWeekEndPrice,
+			int rewardsWeekDayPrice, int rewardsWeekEndPrice) {
 		this.hotelName = hotelName;
 		this.rating = rating;
-		this.regularWeekdayPrice = regularWeekdayPrice;
-		this.regularWeekendPrice = regularWeekendPrice;
+		this.regularWeekDayPrice = regularWeekDayPrice;
+		this.regularWeekEndPrice = regularWeekEndPrice;
+		this.rewardsWeekDayPrice = rewardsWeekDayPrice;
+		this.rewardsWeekEndPrice = rewardsWeekEndPrice;
 	}
 
 	// getters and setters
@@ -27,20 +32,20 @@ public class Hotel {
 		this.hotelName = hotelName;
 	}
 
-	public int getRegularWeekdayPrice() {
-		return regularWeekdayPrice;
+	public int getRegularWeekDayPrice() {
+		return regularWeekDayPrice;
 	}
 
-	public void setRegularWeekdayPrice(int regularWeekdayPrice) {
-		this.regularWeekdayPrice = regularWeekdayPrice;
+	public void setRegularWeekDayPrice(int regularWeekDayPrice) {
+		this.regularWeekDayPrice = regularWeekDayPrice;
 	}
 
-	public int getRegularWeekendPrice() {
-		return regularWeekendPrice;
+	public int getRegularWeekEndPrice() {
+		return regularWeekEndPrice;
 	}
 
-	public void setRegularWeekendPrice(int regularWeekendPrice) {
-		this.regularWeekendPrice = regularWeekendPrice;
+	public void setRegularWeekendPrice(int regularWeekEndPrice) {
+		this.regularWeekEndPrice = regularWeekEndPrice;
 	}
 
 	public int getRating() {
@@ -59,10 +64,28 @@ public class Hotel {
 		this.totalPrice = totalPrice;
 	}
 
+	public int getRewardsWeekDayPrice() {
+		return rewardsWeekDayPrice;
+	}
+
+	public void setRewardsWeekDayPrice(int rewardsWeekDayPrice) {
+		this.rewardsWeekDayPrice = rewardsWeekDayPrice;
+	}
+
+	public int getRewardsWeekEndPrice() {
+		return rewardsWeekEndPrice;
+	}
+
+	public void setRewardsWeekEndPrice(int rewardsWeekEndPrice) {
+		this.rewardsWeekEndPrice = rewardsWeekEndPrice;
+	}
+
 	@Override
 	public String toString() {
 		return "Hotel Name: " + hotelName + "\nRating: " + rating + "\nPrice for regular customer week-day: $"
-				+ regularWeekdayPrice + "\nPrice for regular customer week-end: $" + regularWeekendPrice + "\n";
+				+ regularWeekDayPrice + "\nPrice for regular customer week-end: $" + regularWeekEndPrice
+				+ "\nPrice for rewards customer week-day: $" + rewardsWeekDayPrice
+				+ "\nPrice for rewards customer week-end: $" + rewardsWeekEndPrice + "\n";
 	}
 
 }
