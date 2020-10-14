@@ -7,6 +7,9 @@ public class Hotel {
 	private int totalPrice;
 
 	// constructor
+	public Hotel() {
+	}
+
 	public Hotel(String hotelName, int regularWeekdayPrice, int regularWeekendPrice) {
 		this.hotelName = hotelName;
 		this.regularWeekdayPrice = regularWeekdayPrice;

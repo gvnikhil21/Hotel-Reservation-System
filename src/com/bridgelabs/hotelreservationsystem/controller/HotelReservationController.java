@@ -57,20 +57,23 @@ public class HotelReservationController {
 					weekDays++;
 				date.setTime(date.getTime() + (1000 * 60 * 60 * 24));
 			}
-			int totalPrice = Integer.MAX_VALUE;
-			Hotel cheapestHotel = null;
+			Hotel cheapestHotel = new Hotel();
+			cheapestHotel.setTotalPrice(Integer.MAX_VALUE);
 			List<Hotel> hotelList = hotelReservation.getHotelList();
 			for (Hotel hotel : hotelList) {
 				int price = hotel.getRegularWeekdayPrice() * weekDays + hotel.getRegularWeekendPrice() * weekEnds;
-				if (price < totalPrice) {
-					totalPrice = price;
-					cheapestHotel = hotel;
-					cheapestHotel.setTotalPrice(totalPrice);
+				hotel.setTotalPrice(price);
+				if (hotel.getTotalPrice() < cheapestHotel.getTotalPrice()) {
+					cheapestHotel.setTotalPrice(price);
 				}
 			}
-			HotelReservationMain.LOG.info("Cheapest Hotel for date range " + startDate.getDate() + " to "
-					+ endDate.getDate() + " is: \nHotel Name: " + cheapestHotel.getHotelName()
-					+ "\nTotal Price for given duration: $" + cheapestHotel.getTotalPrice() + "\n");
+			HotelReservationMain.LOG.info(
+					"Cheapest Hotel for date range " + startDate.getDate() + " to " + endDate.getDate() + " :\n");
+			for (Hotel hotel : hotelList) {
+				if (cheapestHotel.getTotalPrice() == hotel.getTotalPrice())
+					HotelReservationMain.LOG.info("Hotel Name: " + hotel.getHotelName()
+							+ "\nTotal Price for given duration: $" + hotel.getTotalPrice() + "\n");
+			}
 		} catch (ParseException | NullPointerException e) {
 			e.printStackTrace();
 		}
