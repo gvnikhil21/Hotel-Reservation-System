@@ -31,11 +31,14 @@ public class HotelReservationMain {
 			case 3:
 				hotelReservationController.findCheapestBestRatedHotel(hotelReservation);
 				break;
-			case 4: 
+			case 4:
 				hotelReservationController.findBestRatedHotel(hotelReservation);
 				break;
 			case 5:
 				LOG.info("You have quit the program! Thank you for your time!");
+				break;
+			default:
+				LOG.info("Invalid choice! Enter correct choice no.!");
 				break;
 			}
 		} while (choice != 5);

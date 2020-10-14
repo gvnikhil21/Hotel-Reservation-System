@@ -29,7 +29,6 @@ public class HotelReservationController {
 		HotelReservationMain.LOG.info("Enter rewardsWeekendPrice: ");
 		int rewardsWeekEndPrice = HotelReservationMain.sc.nextInt();
 		HotelReservationMain.sc.nextLine();
-
 		Hotel hotel = new Hotel(name, rating, regularWeekDayPrice, regularWeekEndPrice, rewardsWeekDayPrice,
 				rewardsWeekEndPrice);
 		hotelReservation.addHotel(hotel);
@@ -48,19 +47,7 @@ public class HotelReservationController {
 
 	// find the cheapest hotel with best rating for a given date range
 	public void findCheapestBestRatedHotel(HotelReservation hotelReservation) {
-		String dateStart = "";
-		String dateEnd = "";
-		do {
-			HotelReservationMain.LOG.info("Enter start date (format: ddMMMyyyy): ");
-			dateStart = HotelReservationMain.sc.nextLine();
-			HotelReservationMain.LOG.info("Enter end date (format: ddMMMyyyy): ");
-			dateEnd = HotelReservationMain.sc.nextLine();
-			if (dateStart.matches("[0-9]{1,2}[A-zA-Z]{3}[0-9]{4}") && dateEnd.matches("[0-9]{1,2}[A-zA-Z]{3}[0-9]{4}"))
-				break;
-			else
-				HotelReservationMain.LOG.info("Invalid date formtat! Enter proper date (format: ddMMMyyyy): ");
-		} while (true);
-		determineWeekDaysWeekEnds(dateStart, dateEnd);
+		getDateRange();
 		String customerType = getCustomerType();
 		List<Hotel> hotelList = getCheapestHotelList(hotelReservation, customerType);
 		hotelList.stream().forEach(hotel -> {
@@ -72,6 +59,22 @@ public class HotelReservationController {
 
 	// finds the best rated hotel
 	public void findBestRatedHotel(HotelReservation hotelReservation) {
+		getDateRange();
+		List<Hotel> hotelList = hotelReservation.getHotelList();
+		String customerType = getCustomerType();
+		int maximumRating = hotelList.stream().mapToInt(Hotel::getRating).max().orElseGet(null);
+		List<Hotel> bestRateHotelList = hotelList.stream().filter(hotel -> hotel.getRating() == maximumRating)
+				.collect(Collectors.toList());
+		bestRateHotelList.stream().forEach(hotel -> {
+			calculateAndSetTotalPrice(hotel, customerType);
+			HotelReservationMain.LOG
+					.info("Best Rated Hotel for given date range:\nHotel Name: " + hotel.getHotelName() + "\nRating: "
+							+ hotel.getRating() + "\nTotal Price for given duration: $" + hotel.getTotalPrice() + "\n");
+		});
+	}
+
+	// get date range from user
+	private void getDateRange() {
 		String dateStart = "";
 		String dateEnd = "";
 		do {
@@ -85,17 +88,6 @@ public class HotelReservationController {
 				HotelReservationMain.LOG.info("Invalid date formtat! Enter proper date (format: ddMMMyyyy): ");
 		} while (true);
 		determineWeekDaysWeekEnds(dateStart, dateEnd);
-		List<Hotel> hotelList = hotelReservation.getHotelList();
-		String customerType = getCustomerType();
-		int maximumRating = hotelList.stream().mapToInt(Hotel::getRating).max().orElseGet(null);
-		List<Hotel> bestRateHotelList = hotelList.stream().filter(hotel -> hotel.getRating() == maximumRating)
-				.collect(Collectors.toList());
-		bestRateHotelList.stream().forEach(hotel -> {
-			calculateAndSetTotalPrice(hotel, customerType);
-			HotelReservationMain.LOG
-					.info("Best Rated Hotel for given date range:\nHotel Name: " + hotel.getHotelName() + "\nRating: "
-							+ hotel.getRating() + "\nTotal Price for given duration: $" + hotel.getTotalPrice() + "\n");
-		});
 	}
 
 	// gets the customer type from the user
@@ -130,9 +122,11 @@ public class HotelReservationController {
 			calculateAndSetTotalPrice(hotel, customerType);
 		});
 		int minimumTotalPrice = hotelList.stream().mapToInt(Hotel::getTotalPrice).min().orElseGet(null);
-		int maximumRating = hotelList.stream().mapToInt(Hotel::getRating).max().orElseGet(null);
 		List<Hotel> cheapHotelList = hotelList.stream().filter(h -> h.getTotalPrice() == minimumTotalPrice)
-				.filter(hotel -> hotel.getRating() == maximumRating).collect(Collectors.toList());
+				.collect(Collectors.toList());
+		int maximumRating = cheapHotelList.stream().mapToInt(Hotel::getRating).max().orElseGet(null);
+		cheapHotelList = cheapHotelList.stream().filter(hotel -> hotel.getRating() == maximumRating)
+				.collect(Collectors.toList());
 		return cheapHotelList;
 	}
 
