@@ -18,7 +18,7 @@ public class HotelReservationMain {
 		HotelReservation hotelReservation = new HotelReservation();
 		do {
 			LOG.info(
-					"Enter the choice no. : \n1. Add Hotel\n2. View All Hotel Details\n3. Find Cheapest Hotel for a date-range\n4. Exit");
+					"Enter the choice no. : \n1. Add Hotel\n2. View All Hotel Details\n3. Find Cheapest Best Rated Hotel\n4. Exit");
 			choice = sc.nextInt();
 			sc.nextLine();
 			switch (choice) {
@@ -29,7 +29,7 @@ public class HotelReservationMain {
 				hotelReservationController.displayHotel(hotelReservation);
 				break;
 			case 3:
-				hotelReservationController.findCheapestHotel(hotelReservation);
+				hotelReservationController.findCheapestBestRatedHotel(hotelReservation);
 				break;
 			case 4:
 				LOG.info("You have quit the program! Thank you for your time!");
