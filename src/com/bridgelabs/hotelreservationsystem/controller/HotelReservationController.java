@@ -98,6 +98,32 @@ public class HotelReservationController {
 		}
 	}
 
+	// finds the best rate hotel
+	public void findBestRatedHotel(HotelReservation hotelReservation) {
+		HotelReservationMain.LOG.info("Enter start date (format: ddMMMyyyy): ");
+		String dateStart = HotelReservationMain.sc.nextLine();
+		HotelReservationMain.LOG.info("Enter end date (format: ddMMMyyyy): ");
+		String dateEnd = HotelReservationMain.sc.nextLine();
+		determineWeekDaysWeekEnds(dateStart, dateEnd);
+		List<Hotel> hotelList = hotelReservation.getHotelList();
+		List<Hotel> bestRatedHotelList = new ArrayList<Hotel>();
+		int rating = Integer.MIN_VALUE;
+		for (Hotel hotel : hotelList) {
+			int price = hotel.getRegularWeekdayPrice() * weekDays + hotel.getRegularWeekendPrice() * weekEnds;
+			hotel.setTotalPrice(price);
+			if (hotel.getRating() > rating)
+				rating = hotel.getRating();
+		}
+		for (Hotel hotel : hotelList) {
+			if (hotel.getRating() == rating)
+				bestRatedHotelList.add(hotel);
+		}
+		for (Hotel hotel : bestRatedHotelList)
+			HotelReservationMain.LOG
+					.info("Best Rated Hotel for given date range:\nHotel Name: " + hotel.getHotelName() + "\nRating: "
+							+ hotel.getRating() + "\nTotal Price for given duration: $" + hotel.getTotalPrice() + "\n");
+	}
+
 	// prints cheapest hotel details
 	public void printCheapestHotel(List<Hotel> cheapestHotelList) {
 		for (Hotel hotel : cheapestHotelList)
