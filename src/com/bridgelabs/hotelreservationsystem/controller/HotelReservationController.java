@@ -2,11 +2,9 @@ package com.bridgelabs.hotelreservationsystem.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.bridgelabs.hotelreservationsystem.model.Hotel;
 import com.bridgelabs.hotelreservationsystem.model.HotelReservation;
@@ -43,24 +41,33 @@ public class HotelReservationController {
 		if (hotelList == null || hotelList.size() == 0)
 			HotelReservationMain.LOG.warning("No Hotel in the list to display");
 		else
-			for (Hotel hotel : hotelList) {
+			hotelList.stream().forEach(hotel -> {
 				HotelReservationMain.LOG.info(hotel.toString());
-			}
+			});
 	}
 
 	// find the cheapest hotel with best rating for a given date range
 	public void findCheapestBestRatedHotel(HotelReservation hotelReservation) {
-		HotelReservationMain.LOG.info("Enter start date (format: ddMMMyyyy): ");
-		String dateStart = HotelReservationMain.sc.nextLine();
-		HotelReservationMain.LOG.info("Enter end date (format: ddMMMyyyy): ");
-		String dateEnd = HotelReservationMain.sc.nextLine();
+		String dateStart = "";
+		String dateEnd = "";
+		do {
+			HotelReservationMain.LOG.info("Enter start date (format: ddMMMyyyy): ");
+			dateStart = HotelReservationMain.sc.nextLine();
+			HotelReservationMain.LOG.info("Enter end date (format: ddMMMyyyy): ");
+			dateEnd = HotelReservationMain.sc.nextLine();
+			if (dateStart.matches("[0-9]{1,2}[A-zA-Z]{3}[0-9]{4}") && dateEnd.matches("[0-9]{1,2}[A-zA-Z]{3}[0-9]{4}"))
+				break;
+			else
+				HotelReservationMain.LOG.info("Invalid date formtat! Enter proper date (format: ddMMMyyyy): ");
+		} while (true);
 		determineWeekDaysWeekEnds(dateStart, dateEnd);
 		String customerType = getCustomerType();
-		List<Hotel> cheapestHotelList = getCheapestHotelList(hotelReservation, customerType);
-		for (Hotel hotel : cheapestHotelList)
+		List<Hotel> hotelList = getCheapestHotelList(hotelReservation, customerType);
+		hotelList.stream().forEach(hotel -> {
 			HotelReservationMain.LOG.info("Cheapest Best Rated Hotel for given date range:\nHotel Name: "
 					+ hotel.getHotelName() + "\nRating: " + hotel.getRating() + "\nTotal Price for given duration: $"
 					+ hotel.getTotalPrice() + "\n");
+		});
 	}
 
 	// finds the best rated hotel
@@ -78,23 +85,17 @@ public class HotelReservationController {
 				HotelReservationMain.LOG.info("Invalid date formtat! Enter proper date (format: ddMMMyyyy): ");
 		} while (true);
 		determineWeekDaysWeekEnds(dateStart, dateEnd);
-		List<Hotel> bestRatedHotelList = new ArrayList<Hotel>();
 		List<Hotel> hotelList = hotelReservation.getHotelList();
 		String customerType = getCustomerType();
-		int rating = Integer.MIN_VALUE;
-		for (Hotel hotel : hotelList) {
+		int maximumRating = hotelList.stream().mapToInt(Hotel::getRating).max().orElseGet(null);
+		List<Hotel> bestRateHotelList = hotelList.stream().filter(hotel -> hotel.getRating() == maximumRating)
+				.collect(Collectors.toList());
+		bestRateHotelList.stream().forEach(hotel -> {
 			calculateAndSetTotalPrice(hotel, customerType);
-			if (hotel.getRating() > rating)
-				rating = hotel.getRating();
-		}
-		for (Hotel hotel : hotelList) {
-			if (hotel.getRating() == rating)
-				bestRatedHotelList.add(hotel);
-		}
-		for (Hotel hotel : bestRatedHotelList)
 			HotelReservationMain.LOG
 					.info("Best Rated Hotel for given date range:\nHotel Name: " + hotel.getHotelName() + "\nRating: "
 							+ hotel.getRating() + "\nTotal Price for given duration: $" + hotel.getTotalPrice() + "\n");
+		});
 	}
 
 	// gets the customer type from the user
@@ -124,25 +125,15 @@ public class HotelReservationController {
 
 	// returns the list of best rated cheapest hotels for a given date range
 	private List<Hotel> getCheapestHotelList(HotelReservation hotelReservation, String customerType) {
-		List<Hotel> cheapestHotelList = new ArrayList<Hotel>();
-		Hotel cheapestHotel = new Hotel();
-		cheapestHotel.setTotalPrice(Integer.MAX_VALUE);
-		cheapestHotel.setRating(Integer.MIN_VALUE);
 		List<Hotel> hotelList = hotelReservation.getHotelList();
-		for (Hotel hotel : hotelList) {
+		hotelList.stream().forEach(hotel -> {
 			calculateAndSetTotalPrice(hotel, customerType);
-			if ((hotel.getTotalPrice() <= cheapestHotel.getTotalPrice())
-					&& (hotel.getRating() > cheapestHotel.getRating())) {
-				cheapestHotel.setRating(hotel.getRating());
-				cheapestHotel.setTotalPrice(hotel.getTotalPrice());
-			}
-		}
-		for (Hotel hotel : hotelList) {
-			if ((cheapestHotel.getTotalPrice() == hotel.getTotalPrice())
-					&& (cheapestHotel.getRating() == hotel.getRating()))
-				cheapestHotelList.add(hotel);
-		}
-		return cheapestHotelList;
+		});
+		int minimumTotalPrice = hotelList.stream().mapToInt(Hotel::getTotalPrice).min().orElseGet(null);
+		int maximumRating = hotelList.stream().mapToInt(Hotel::getRating).max().orElseGet(null);
+		List<Hotel> cheapHotelList = hotelList.stream().filter(h -> h.getTotalPrice() == minimumTotalPrice)
+				.filter(hotel -> hotel.getRating() == maximumRating).collect(Collectors.toList());
+		return cheapHotelList;
 	}
 
 	// determines no. of weekEnds and weekDays
